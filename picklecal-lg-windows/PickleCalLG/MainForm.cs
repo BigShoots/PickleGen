@@ -1,8 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PickleCalLG.Meters;
+using PickleCalLG.Meters.Argyll;
+using PickleCalLG.Meters.Simulation;
+using PickleCalLG.Meters.Sequences;
 
 namespace PickleCalLG
 {
@@ -11,6 +18,12 @@ namespace PickleCalLG
         private LgTvController? _tvController;
         private PGenServer? _pgenServer;
         private string _tvIp = "";
+        private MeterManager _meterManager;
+        private readonly CancellationTokenSource _meterCancellation = new();
+        private MeterMeasurementState _lastMeterState = MeterMeasurementState.Disconnected;
+        private MeasurementQueueRunner? _sequenceRunner;
+        private CancellationTokenSource? _sequenceCancellation;
+        private bool _sequenceRunning;
 
         private TabControl tabControl1;
         private TabPage tabPageConnection;
@@ -18,6 +31,7 @@ namespace PickleCalLG
         private TabPage tabPagePictureSettings;
         private TabPage tabPageWhiteBalance;
         private TabPage tabPagePatternGen;
+        private TabPage tabPageMeter;
         private GroupBox groupBox1;
         private CheckBox chkSecureConnection;
         private TextBox txtTvIp;
@@ -40,11 +54,39 @@ namespace PickleCalLG
         private GroupBox groupBox4;
         private Button btnDisableProcessing;
         private Button btnReadSettings;
+        private GroupBox groupBoxMeterSelect;
+        private GroupBox groupBoxMeterControl;
+        private ComboBox cmbMeters;
+        private Button btnMeterRefresh;
+        private Button btnMeterConnect;
+        private Button btnMeterDisconnect;
+        private Button btnMeterCalibrate;
+        private Button btnMeterMeasure;
+        private CheckBox chkMeterAveraging;
+        private CheckBox chkMeterHighRes;
+        private TextBox txtMeterDisplayType;
+        private Label lblMeterStatus;
+        private Label lblMeterMeasurement;
+        private Label lblMeterDisplayType;
+        private GroupBox groupBoxMeasurementSequence;
+        private Button btnRunGrayscale;
+        private Button btnRunColorSweep;
+        private Button btnStopSequence;
+        private ListBox lstMeasurementLog;
+        private Label lblSequenceStatus;
 
         public MainForm()
         {
             InitializeComponent();
             InitializeUI();
+            _meterManager = new MeterManager(
+                new CompositeMeterDiscoveryService(
+                    new ArgyllSpotreadDiscoveryService(),
+                    new SimulatedMeterDiscoveryService()));
+            _meterManager.MeterStateChanged += MeterManagerOnStateChanged;
+            _meterManager.MeasurementAvailable += MeterManagerOnMeasurement;
+            Load += MainForm_LoadAsync;
+            FormClosing += MainForm_FormClosing;
         }
 
         private void InitializeComponent()
@@ -55,6 +97,7 @@ namespace PickleCalLG
             tabPagePictureSettings = new TabPage();
             tabPageWhiteBalance = new TabPage();
             tabPagePatternGen = new TabPage();
+            tabPageMeter = new TabPage();
             groupBox1 = new GroupBox();
             chkSecureConnection = new CheckBox();
             txtTvIp = new TextBox();
@@ -77,6 +120,26 @@ namespace PickleCalLG
             groupBox4 = new GroupBox();
             btnDisableProcessing = new Button();
             btnReadSettings = new Button();
+            groupBoxMeterSelect = new GroupBox();
+            groupBoxMeterControl = new GroupBox();
+            groupBoxMeasurementSequence = new GroupBox();
+            cmbMeters = new ComboBox();
+            btnMeterRefresh = new Button();
+            btnMeterConnect = new Button();
+            btnMeterDisconnect = new Button();
+            btnMeterCalibrate = new Button();
+            btnMeterMeasure = new Button();
+            chkMeterAveraging = new CheckBox();
+            chkMeterHighRes = new CheckBox();
+            txtMeterDisplayType = new TextBox();
+            lblMeterStatus = new Label();
+            lblMeterMeasurement = new Label();
+            lblMeterDisplayType = new Label();
+            btnRunGrayscale = new Button();
+            btnRunColorSweep = new Button();
+            btnStopSequence = new Button();
+            lstMeasurementLog = new ListBox();
+            lblSequenceStatus = new Label();
 
             tabControl1.SuspendLayout();
             tabPageConnection.SuspendLayout();
@@ -86,6 +149,10 @@ namespace PickleCalLG
             tabPagePictureSettings.SuspendLayout();
             groupBox3.SuspendLayout();
             tabPageWhiteBalance.SuspendLayout();
+            tabPageMeter.SuspendLayout();
+            groupBoxMeterSelect.SuspendLayout();
+            groupBoxMeterControl.SuspendLayout();
+            groupBoxMeasurementSequence.SuspendLayout();
             SuspendLayout();
 
             // tabControl1
@@ -94,6 +161,7 @@ namespace PickleCalLG
             tabControl1.Controls.Add(tabPagePictureSettings);
             tabControl1.Controls.Add(tabPageWhiteBalance);
             tabControl1.Controls.Add(tabPagePatternGen);
+            tabControl1.Controls.Add(tabPageMeter);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
@@ -313,6 +381,202 @@ namespace PickleCalLG
             tabPagePatternGen.TabIndex = 4;
             tabPagePatternGen.Text = "Pattern Gen";
 
+            // tabPageMeter
+            tabPageMeter.Controls.Add(groupBoxMeasurementSequence);
+            tabPageMeter.Controls.Add(groupBoxMeterControl);
+            tabPageMeter.Controls.Add(groupBoxMeterSelect);
+            tabPageMeter.Controls.Add(lblMeterMeasurement);
+            tabPageMeter.Controls.Add(lblMeterStatus);
+            tabPageMeter.Location = new Point(4, 24);
+            tabPageMeter.Name = "tabPageMeter";
+            tabPageMeter.Padding = new Padding(3);
+            tabPageMeter.Size = new Size(792, 572);
+            tabPageMeter.TabIndex = 5;
+            tabPageMeter.Text = "Meters";
+
+            // groupBoxMeterSelect
+            groupBoxMeterSelect.Controls.Add(btnMeterDisconnect);
+            groupBoxMeterSelect.Controls.Add(btnMeterConnect);
+            groupBoxMeterSelect.Controls.Add(btnMeterRefresh);
+            groupBoxMeterSelect.Controls.Add(cmbMeters);
+            groupBoxMeterSelect.Location = new Point(20, 20);
+            groupBoxMeterSelect.Name = "groupBoxMeterSelect";
+            groupBoxMeterSelect.Size = new Size(360, 130);
+            groupBoxMeterSelect.TabIndex = 0;
+            groupBoxMeterSelect.TabStop = false;
+            groupBoxMeterSelect.Text = "Meter";
+
+            // cmbMeters
+            cmbMeters.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbMeters.FormattingEnabled = true;
+            cmbMeters.Location = new Point(15, 35);
+            cmbMeters.Name = "cmbMeters";
+            cmbMeters.Size = new Size(200, 23);
+            cmbMeters.TabIndex = 0;
+
+            // btnMeterRefresh
+            btnMeterRefresh.Location = new Point(230, 34);
+            btnMeterRefresh.Name = "btnMeterRefresh";
+            btnMeterRefresh.Size = new Size(110, 25);
+            btnMeterRefresh.TabIndex = 1;
+            btnMeterRefresh.Text = "Refresh";
+            btnMeterRefresh.UseVisualStyleBackColor = true;
+            btnMeterRefresh.Click += btnMeterRefresh_Click;
+
+            // btnMeterConnect
+            btnMeterConnect.Location = new Point(15, 75);
+            btnMeterConnect.Name = "btnMeterConnect";
+            btnMeterConnect.Size = new Size(110, 25);
+            btnMeterConnect.TabIndex = 2;
+            btnMeterConnect.Text = "Connect";
+            btnMeterConnect.UseVisualStyleBackColor = true;
+            btnMeterConnect.Click += btnMeterConnect_Click;
+
+            // btnMeterDisconnect
+            btnMeterDisconnect.Location = new Point(230, 75);
+            btnMeterDisconnect.Name = "btnMeterDisconnect";
+            btnMeterDisconnect.Size = new Size(110, 25);
+            btnMeterDisconnect.TabIndex = 3;
+            btnMeterDisconnect.Text = "Disconnect";
+            btnMeterDisconnect.UseVisualStyleBackColor = true;
+            btnMeterDisconnect.Click += btnMeterDisconnect_Click;
+
+            // groupBoxMeterControl
+            groupBoxMeterControl.Controls.Add(btnMeterMeasure);
+            groupBoxMeterControl.Controls.Add(btnMeterCalibrate);
+            groupBoxMeterControl.Controls.Add(txtMeterDisplayType);
+            groupBoxMeterControl.Controls.Add(lblMeterDisplayType);
+            groupBoxMeterControl.Controls.Add(chkMeterHighRes);
+            groupBoxMeterControl.Controls.Add(chkMeterAveraging);
+            groupBoxMeterControl.Location = new Point(20, 170);
+            groupBoxMeterControl.Name = "groupBoxMeterControl";
+            groupBoxMeterControl.Size = new Size(360, 180);
+            groupBoxMeterControl.TabIndex = 1;
+            groupBoxMeterControl.TabStop = false;
+            groupBoxMeterControl.Text = "Measurement";
+
+            // groupBoxMeasurementSequence
+            groupBoxMeasurementSequence.Controls.Add(lstMeasurementLog);
+            groupBoxMeasurementSequence.Controls.Add(lblSequenceStatus);
+            groupBoxMeasurementSequence.Controls.Add(btnStopSequence);
+            groupBoxMeasurementSequence.Controls.Add(btnRunColorSweep);
+            groupBoxMeasurementSequence.Controls.Add(btnRunGrayscale);
+            groupBoxMeasurementSequence.Location = new Point(400, 20);
+            groupBoxMeasurementSequence.Name = "groupBoxMeasurementSequence";
+            groupBoxMeasurementSequence.Size = new Size(360, 330);
+            groupBoxMeasurementSequence.TabIndex = 4;
+            groupBoxMeasurementSequence.TabStop = false;
+            groupBoxMeasurementSequence.Text = "Measurement Sequences";
+
+            // btnRunGrayscale
+            btnRunGrayscale.Location = new Point(15, 30);
+            btnRunGrayscale.Name = "btnRunGrayscale";
+            btnRunGrayscale.Size = new Size(100, 25);
+            btnRunGrayscale.TabIndex = 0;
+            btnRunGrayscale.Text = "10pt Grayscale";
+            btnRunGrayscale.UseVisualStyleBackColor = true;
+            btnRunGrayscale.Click += btnRunGrayscale_Click;
+
+            // btnRunColorSweep
+            btnRunColorSweep.Location = new Point(130, 30);
+            btnRunColorSweep.Name = "btnRunColorSweep";
+            btnRunColorSweep.Size = new Size(120, 25);
+            btnRunColorSweep.TabIndex = 1;
+            btnRunColorSweep.Text = "Primaries/Secondaries";
+            btnRunColorSweep.UseVisualStyleBackColor = true;
+            btnRunColorSweep.Click += btnRunColorSweep_Click;
+
+            // btnStopSequence
+            btnStopSequence.Location = new Point(270, 30);
+            btnStopSequence.Name = "btnStopSequence";
+            btnStopSequence.Size = new Size(75, 25);
+            btnStopSequence.TabIndex = 2;
+            btnStopSequence.Text = "Stop";
+            btnStopSequence.UseVisualStyleBackColor = true;
+            btnStopSequence.Click += btnStopSequence_Click;
+
+            // lblSequenceStatus
+            lblSequenceStatus.AutoSize = true;
+            lblSequenceStatus.Location = new Point(15, 70);
+            lblSequenceStatus.Name = "lblSequenceStatus";
+            lblSequenceStatus.Size = new Size(110, 15);
+            lblSequenceStatus.TabIndex = 3;
+            lblSequenceStatus.Text = "Sequence: not running";
+
+            // lstMeasurementLog
+            lstMeasurementLog.FormattingEnabled = true;
+            lstMeasurementLog.ItemHeight = 15;
+            lstMeasurementLog.Location = new Point(15, 95);
+            lstMeasurementLog.Name = "lstMeasurementLog";
+            lstMeasurementLog.Size = new Size(330, 214);
+            lstMeasurementLog.TabIndex = 4;
+
+            // chkMeterAveraging
+            chkMeterAveraging.AutoSize = true;
+            chkMeterAveraging.Location = new Point(15, 60);
+            chkMeterAveraging.Name = "chkMeterAveraging";
+            chkMeterAveraging.Size = new Size(98, 19);
+            chkMeterAveraging.TabIndex = 1;
+            chkMeterAveraging.Text = "Use averaging";
+            chkMeterAveraging.UseVisualStyleBackColor = true;
+
+            // chkMeterHighRes
+            chkMeterHighRes.AutoSize = true;
+            chkMeterHighRes.Location = new Point(15, 30);
+            chkMeterHighRes.Name = "chkMeterHighRes";
+            chkMeterHighRes.Size = new Size(115, 19);
+            chkMeterHighRes.TabIndex = 0;
+            chkMeterHighRes.Text = "High resolution";
+            chkMeterHighRes.UseVisualStyleBackColor = true;
+
+            // lblMeterDisplayType
+            lblMeterDisplayType.AutoSize = true;
+            lblMeterDisplayType.Location = new Point(15, 95);
+            lblMeterDisplayType.Name = "lblMeterDisplayType";
+            lblMeterDisplayType.Size = new Size(136, 15);
+            lblMeterDisplayType.TabIndex = 2;
+            lblMeterDisplayType.Text = "Display type (optional):";
+
+            // txtMeterDisplayType
+            txtMeterDisplayType.Location = new Point(170, 92);
+            txtMeterDisplayType.Name = "txtMeterDisplayType";
+            txtMeterDisplayType.Size = new Size(150, 23);
+            txtMeterDisplayType.TabIndex = 3;
+
+            // btnMeterCalibrate
+            btnMeterCalibrate.Location = new Point(15, 135);
+            btnMeterCalibrate.Name = "btnMeterCalibrate";
+            btnMeterCalibrate.Size = new Size(110, 25);
+            btnMeterCalibrate.TabIndex = 4;
+            btnMeterCalibrate.Text = "Calibrate";
+            btnMeterCalibrate.UseVisualStyleBackColor = true;
+            btnMeterCalibrate.Click += btnMeterCalibrate_Click;
+
+            // btnMeterMeasure
+            btnMeterMeasure.Location = new Point(170, 135);
+            btnMeterMeasure.Name = "btnMeterMeasure";
+            btnMeterMeasure.Size = new Size(110, 25);
+            btnMeterMeasure.TabIndex = 5;
+            btnMeterMeasure.Text = "Measure";
+            btnMeterMeasure.UseVisualStyleBackColor = true;
+            btnMeterMeasure.Click += btnMeterMeasure_Click;
+
+            // lblMeterStatus
+            lblMeterStatus.AutoSize = true;
+            lblMeterStatus.Location = new Point(20, 370);
+            lblMeterStatus.Name = "lblMeterStatus";
+            lblMeterStatus.Size = new Size(107, 15);
+            lblMeterStatus.TabIndex = 2;
+            lblMeterStatus.Text = "Meter status: Idle";
+
+            // lblMeterMeasurement
+            lblMeterMeasurement.AutoSize = true;
+            lblMeterMeasurement.Location = new Point(20, 400);
+            lblMeterMeasurement.Name = "lblMeterMeasurement";
+            lblMeterMeasurement.Size = new Size(191, 15);
+            lblMeterMeasurement.TabIndex = 3;
+            lblMeterMeasurement.Text = "Last reading: waiting for measure";
+
             // MainForm
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -332,6 +596,13 @@ namespace PickleCalLG
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
             tabPageWhiteBalance.ResumeLayout(false);
+            tabPageMeter.ResumeLayout(false);
+            tabPageMeter.PerformLayout();
+            groupBoxMeterSelect.ResumeLayout(false);
+            groupBoxMeterControl.ResumeLayout(false);
+            groupBoxMeterControl.PerformLayout();
+            groupBoxMeasurementSequence.ResumeLayout(false);
+            groupBoxMeasurementSequence.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -350,6 +621,15 @@ namespace PickleCalLG
             cmbColorTemp.Items.AddRange(new[] { "warm50", "warm40", "medium", "cool10", "cool20" });
             cmbColorTemp.SelectedIndex = 2;
             lblStatus.Text = "Ready";
+            lblMeterStatus.Text = "Meter status: Not connected";
+            lblMeterMeasurement.Text = "Last reading: waiting for measure";
+            btnMeterDisconnect.Enabled = false;
+            btnMeterMeasure.Enabled = false;
+            btnMeterCalibrate.Enabled = false;
+            lblSequenceStatus.Text = "Sequence: not running";
+            btnStopSequence.Enabled = false;
+            lstMeasurementLog.Items.Clear();
+            UpdateSequenceButtons();
         }
 
         private async void btnConnect_Click(object sender, EventArgs e)
@@ -459,6 +739,395 @@ namespace PickleCalLG
             await _tvController.SetColorTemperatureAsync(temp);
 
             lblStatus.Text = $"Color settings applied: {gamut}/{gamma}/{temp}";
+        }
+
+        private async void MainForm_LoadAsync(object? sender, EventArgs e)
+        {
+            await RefreshMetersAsync();
+        }
+
+        private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            _meterCancellation.Cancel();
+            _sequenceCancellation?.Cancel();
+            _sequenceCancellation?.Dispose();
+            try
+            {
+                _meterManager.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            }
+            catch
+            {
+                // best effort cleanup
+            }
+        }
+
+        private async void btnMeterRefresh_Click(object? sender, EventArgs e)
+        {
+            await RefreshMetersAsync();
+        }
+
+        private async void btnMeterConnect_Click(object? sender, EventArgs e)
+        {
+            if (cmbMeters.SelectedItem is not MeterDescriptor descriptor)
+            {
+                MessageBox.Show("No meter detected. Refresh and select a device.", "Meter", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            ToggleMeterControls(false);
+
+            try
+            {
+                bool selected = await _meterManager.SelectMeterAsync(descriptor.Id, _meterCancellation.Token);
+                if (!selected)
+                {
+                    lblMeterStatus.Text = "Meter status: selection failed";
+                    return;
+                }
+
+                var options = new MeterConnectOptions
+                {
+                    PreferredMode = MeterMeasurementMode.Display,
+                    UseHighResolution = chkMeterHighRes.Checked,
+                    DisplayType = string.IsNullOrWhiteSpace(txtMeterDisplayType.Text) ? null : txtMeterDisplayType.Text.Trim()
+                };
+
+                await _meterManager.ConnectActiveMeterAsync(options, _meterCancellation.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                lblMeterStatus.Text = "Meter status: operation cancelled";
+            }
+            catch (Exception ex)
+            {
+                lblMeterStatus.Text = $"Meter status: {ex.Message}";
+            }
+            finally
+            {
+                ToggleMeterControls(true);
+            }
+        }
+
+        private async void btnMeterDisconnect_Click(object? sender, EventArgs e)
+        {
+            ToggleMeterControls(false);
+            try
+            {
+                await _meterManager.DisconnectAsync(_meterCancellation.Token);
+            }
+            catch (Exception ex)
+            {
+                lblMeterStatus.Text = $"Meter status: {ex.Message}";
+            }
+            finally
+            {
+                ToggleMeterControls(true);
+            }
+        }
+
+        private async void btnMeterCalibrate_Click(object? sender, EventArgs e)
+        {
+            ToggleMeterControls(false);
+            try
+            {
+                var request = new MeterCalibrationRequest(MeterMeasurementMode.Display, true);
+                var result = await _meterManager.CalibrateAsync(request, _meterCancellation.Token);
+                if (result != null && !result.Success)
+                {
+                    MessageBox.Show(result.Message ?? "Calibration failed.", "Meter", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                lblMeterStatus.Text = "Meter status: calibration cancelled";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Meter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                ToggleMeterControls(true);
+            }
+        }
+
+        private async void btnMeterMeasure_Click(object? sender, EventArgs e)
+        {
+            ToggleMeterControls(false);
+            try
+            {
+                var request = new MeterMeasureRequest(MeterMeasurementMode.Display, TimeSpan.Zero, 100d, chkMeterAveraging.Checked);
+                var result = await _meterManager.MeasureAsync(request, _meterCancellation.Token);
+                if (result == null)
+                {
+                    lblMeterStatus.Text = "Meter status: no active meter";
+                }
+                else if (!result.Success)
+                {
+                    MessageBox.Show(result.Message ?? "Measurement failed.", "Meter", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                lblMeterStatus.Text = "Meter status: measurement cancelled";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Meter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                ToggleMeterControls(true);
+            }
+        }
+
+        private async void btnRunGrayscale_Click(object? sender, EventArgs e)
+        {
+            var sequence = MeasurementSequences.Grayscale10Point(chkMeterAveraging.Checked);
+            await RunSequenceAsync(sequence);
+        }
+
+        private async void btnRunColorSweep_Click(object? sender, EventArgs e)
+        {
+            var sequence = MeasurementSequences.PrimarySecondarySweep(chkMeterAveraging.Checked);
+            await RunSequenceAsync(sequence);
+        }
+
+        private void btnStopSequence_Click(object? sender, EventArgs e)
+        {
+            if (!_sequenceRunning)
+            {
+                return;
+            }
+
+            _sequenceCancellation?.Cancel();
+        }
+
+        private async Task RunSequenceAsync(MeasurementSequence sequence)
+        {
+            if (_sequenceRunning)
+            {
+                MessageBox.Show("A sequence is already running.", "Sequences", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (_lastMeterState != MeterMeasurementState.Idle)
+            {
+                MessageBox.Show("Meter must be connected and idle before starting a sequence.", "Sequences", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            EnsureSequenceRunner();
+
+            _sequenceCancellation = new CancellationTokenSource();
+            _sequenceRunning = true;
+            UpdateSequenceButtons();
+            AppendSequenceLog($"Preparing {sequence.Name}...");
+
+            try
+            {
+                await _sequenceRunner!.RunAsync(sequence, _sequenceCancellation.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AppendSequenceLog("Sequence cancelled.");
+                lblSequenceStatus.Text = "Sequence: cancelled";
+            }
+            catch (Exception ex)
+            {
+                AppendSequenceLog($"Sequence error: {ex.Message}");
+                lblSequenceStatus.Text = "Sequence: error";
+            }
+            finally
+            {
+                _sequenceRunning = false;
+                _sequenceCancellation?.Dispose();
+                _sequenceCancellation = null;
+                UpdateSequenceButtons();
+            }
+        }
+
+        private void EnsureSequenceRunner()
+        {
+            if (_sequenceRunner != null)
+            {
+                return;
+            }
+
+            _sequenceRunner = new MeasurementQueueRunner(_meterManager);
+            _sequenceRunner.SequenceStarted += SequenceRunnerOnSequenceStarted;
+            _sequenceRunner.StepStarted += SequenceRunnerOnStepStarted;
+            _sequenceRunner.StepCompleted += SequenceRunnerOnStepCompleted;
+            _sequenceRunner.SequenceCompleted += SequenceRunnerOnSequenceCompleted;
+            _sequenceRunner.StepFailed += SequenceRunnerOnStepFailed;
+        }
+
+        private void SequenceRunnerOnSequenceStarted(MeasurementSequence sequence)
+        {
+            lstMeasurementLog.Items.Clear();
+            AppendSequenceLog($"Sequence started: {sequence.Name}");
+            lblSequenceStatus.Text = $"Sequence: {sequence.Name}";
+        }
+
+        private void SequenceRunnerOnStepStarted(MeasurementStep step)
+        {
+            lblSequenceStatus.Text = $"Running: {step.Name}";
+            AppendSequenceLog($"Step started: {step.Name}");
+        }
+
+        private void SequenceRunnerOnStepCompleted(MeasurementStep step, MeterMeasurementResult? result)
+        {
+            if (result != null && result.Success && result.Reading != null)
+            {
+                var reading = result.Reading;
+                var (x, y) = reading.Chromaticity;
+                AppendSequenceLog($"Step completed: {step.Name} | Y {reading.Luminance:F2} cd/m², x {x:F4}, y {y:F4}");
+            }
+            else
+            {
+                string message = result?.Message ?? "No data";
+                AppendSequenceLog($"Step completed with errors: {step.Name} | {message}");
+            }
+        }
+
+        private void SequenceRunnerOnStepFailed(MeasurementStep step, Exception ex)
+        {
+            AppendSequenceLog($"Step failed: {step.Name} | {ex.Message}");
+            lblSequenceStatus.Text = $"Error on {step.Name}";
+        }
+
+        private void SequenceRunnerOnSequenceCompleted(IReadOnlyList<MeasurementStepResult> results)
+        {
+            int successCount = results.Count(r => r.Success);
+            AppendSequenceLog($"Sequence complete: {successCount}/{results.Count} successful");
+            lblSequenceStatus.Text = $"Sequence complete ({successCount}/{results.Count})";
+        }
+
+        private void AppendSequenceLog(string message)
+        {
+            lstMeasurementLog.Items.Add($"[{DateTime.Now:HH:mm:ss}] {message}");
+            lstMeasurementLog.TopIndex = lstMeasurementLog.Items.Count - 1;
+        }
+
+        private void UpdateSequenceButtons()
+        {
+            if (btnRunGrayscale == null || btnRunColorSweep == null || btnStopSequence == null)
+            {
+                return;
+            }
+
+            bool meterReady = _lastMeterState == MeterMeasurementState.Idle;
+            btnRunGrayscale.Enabled = meterReady && !_sequenceRunning;
+            btnRunColorSweep.Enabled = meterReady && !_sequenceRunning;
+            btnStopSequence.Enabled = _sequenceRunning;
+        }
+
+        private async Task RefreshMetersAsync()
+        {
+            ToggleMeterControls(false);
+            try
+            {
+                lblMeterStatus.Text = "Meter status: scanning...";
+                await _meterManager.RefreshMetersAsync(_meterCancellation.Token);
+                PopulateMeterList();
+                lblMeterStatus.Text = _meterManager.KnownMeters.Count > 0 ? "Meter status: select a device" : "Meter status: no meters found";
+            }
+            catch (OperationCanceledException)
+            {
+                lblMeterStatus.Text = "Meter status: scan cancelled";
+            }
+            catch (Exception ex)
+            {
+                lblMeterStatus.Text = $"Meter status: {ex.Message}";
+            }
+            finally
+            {
+                ToggleMeterControls(true);
+            }
+        }
+
+        private void PopulateMeterList()
+        {
+            cmbMeters.BeginUpdate();
+            try
+            {
+                cmbMeters.DataSource = null;
+                var meters = _meterManager.KnownMeters.ToList();
+                cmbMeters.DataSource = meters;
+                cmbMeters.DisplayMember = nameof(MeterDescriptor.DisplayName);
+                cmbMeters.ValueMember = nameof(MeterDescriptor.Id);
+                if (meters.Count > 0)
+                {
+                    cmbMeters.SelectedIndex = 0;
+                }
+            }
+            finally
+            {
+                cmbMeters.EndUpdate();
+            }
+        }
+
+        private void MeterManagerOnStateChanged(MeterStateChangedEventArgs args)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() => MeterManagerOnStateChanged(args)));
+                return;
+            }
+
+            string meterName = args.Descriptor?.DisplayName ?? "None";
+            _lastMeterState = args.State;
+            lblMeterStatus.Text = $"Meter status: {args.State} ({meterName})";
+            ApplyMeterState();
+        }
+
+        private void MeterManagerOnMeasurement(MeterMeasurementResult result)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() => MeterManagerOnMeasurement(result)));
+                return;
+            }
+
+            if (result.Success && result.Reading != null)
+            {
+                var reading = result.Reading;
+                var (x, y) = reading.Chromaticity;
+                string cct = reading.CorrelatedColorTemperatureK.HasValue
+                    ? $", CCT {reading.CorrelatedColorTemperatureK.Value:F0}K"
+                    : string.Empty;
+                string deltaE = reading.DeltaE2000.HasValue ? $", ΔE {reading.DeltaE2000.Value:F2}" : string.Empty;
+                lblMeterMeasurement.Text = $"Last reading: Y {reading.Luminance:F2} cd/m², x {x:F4}, y {y:F4}{cct}{deltaE}";
+            }
+            else
+            {
+                lblMeterMeasurement.Text = $"Last reading: {result.Message ?? "No data"}";
+            }
+        }
+
+        private void ToggleMeterControls(bool enabled)
+        {
+            btnMeterRefresh.Enabled = enabled;
+            if (!enabled)
+            {
+                btnMeterConnect.Enabled = false;
+                btnMeterMeasure.Enabled = false;
+                btnMeterCalibrate.Enabled = false;
+                btnMeterDisconnect.Enabled = false;
+            }
+            else
+            {
+                ApplyMeterState();
+            }
+        }
+
+        private void ApplyMeterState()
+        {
+            btnMeterConnect.Enabled = _meterManager != null && _lastMeterState == MeterMeasurementState.Disconnected && _meterManager.KnownMeters.Count > 0;
+            btnMeterMeasure.Enabled = _lastMeterState == MeterMeasurementState.Idle;
+            btnMeterCalibrate.Enabled = _lastMeterState == MeterMeasurementState.Idle || _lastMeterState == MeterMeasurementState.Calibrating;
+            btnMeterDisconnect.Enabled = _lastMeterState != MeterMeasurementState.Disconnected;
+            UpdateSequenceButtons();
         }
     }
 }
