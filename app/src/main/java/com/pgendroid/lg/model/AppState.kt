@@ -114,5 +114,14 @@ enum class PatternMode {
     RESOLVE_SDR,
     RESOLVE_HDR,
     PGEN_SDR,
-    PGEN_HDR
+    PGEN_HDR,
+    PICKLECAL_EASY
+}
+
+/**
+ * App-wide operating mode: Easy (controlled by PickleCal) or Pro (standalone).
+ */
+enum class AppMode {
+    EASY,
+    PRO
 }

@@ -1,7 +1,23 @@
 <resources>
-    <string name="app_name">PickleCal</string>
+    <string name="app_name">PickleGen</string>
     <string name="lg_control_title">LG TV Calibration</string>
     <string name="lg_calibration_title">LG TV Calibration</string>
+
+    <!-- Mode Selection -->
+    <string name="mode_select_subtitle">Choose how you want to use this device</string>
+    <string name="mode_easy_title">Easy Mode</string>
+    <string name="mode_easy_desc">Connect to PickleCal on your Windows PC for guided, wizard-driven TV calibration. No experience required — just follow the steps.</string>
+    <string name="mode_pro_title">Pro Mode</string>
+    <string name="mode_pro_desc">Use as a standalone pattern generator with HCFR, Calman, DisplayCAL, or other calibration software. Full manual control over patterns, HDR, and protocols.</string>
+    <string name="app_version">PickleGen v1.0</string>
+
+    <!-- Easy Mode -->
+    <string name="easy_mode_header">Easy Mode — PickleCal Remote</string>
+    <string name="easy_waiting">Waiting for PickleCal to connect…</string>
+    <string name="easy_ip_label">Enter this IP in PickleCal:</string>
+    <string name="easy_port_label">Port 5742 (automatic)</string>
+    <string name="easy_start_patterns">Start Patterns</string>
+    <string name="easy_go_back">← Back to Mode Select</string>
 
     <!-- Main Activity -->
     <string name="section_mode">Display Mode</string>

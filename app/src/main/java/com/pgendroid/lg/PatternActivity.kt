@@ -97,6 +97,7 @@ class PatternActivity : AppCompatActivity() {
             PatternMode.PGEN_SDR -> startPGenMode(false)
             PatternMode.PGEN_HDR -> startPGenMode(true)
             PatternMode.MANUAL -> startManualMode()
+            PatternMode.PICKLECAL_EASY -> startPickleCalEasyMode()
         }
 
         applyHdrMode()
@@ -137,6 +138,40 @@ class PatternActivity : AppCompatActivity() {
         networkThread = Thread({
             pgenServer?.start()
         }, "PGen-Server").also {
+            it.isDaemon = true
+            it.start()
+        }
+    }
+
+    /**
+     * PickleCal Easy mode: The PatternActivity simply renders whatever AppState
+     * contains — the PickleCalServer (running from EasyModeActivity) writes
+     * draw commands and mode changes into AppState.
+     *
+     * A background thread monitors modeChanged to apply HDR/SDR switches
+     * in real-time as the PickleCal Windows app sends them.
+     */
+    private fun startPickleCalEasyMode() {
+        Log.i(TAG, "PickleCal Easy mode — rendering controlled by PickleCal Server")
+        AppState.connectionStatus.set("PickleCal Easy: Rendering patterns")
+
+        // Monitor for HDR/SDR mode changes pushed by the PickleCal server
+        networkThread = Thread({
+            while (!Thread.currentThread().isInterrupted) {
+                try {
+                    if (AppState.modeChanged) {
+                        AppState.modeChanged = false
+                        runOnUiThread {
+                            applyHdrMode()
+                            applyHdrMetadata()
+                        }
+                    }
+                    Thread.sleep(100)
+                } catch (e: InterruptedException) {
+                    break
+                }
+            }
+        }, "PickleCal-ModeMonitor").also {
             it.isDaemon = true
             it.start()
         }
