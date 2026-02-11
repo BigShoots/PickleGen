@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.picklecal.lg.app-mergeDebugResources-29:/values-hdpi-v4/values-hdpi-v4.xml",
+            "map": [
+                {
+                    "source": "/home/jordan/.gradle/caches/8.10.2/transforms/25d7fb3c67abbbf9e6c1a5dc88597a25/transformed/appcompat-1.6.1/res/values-hdpi-v4/values-hdpi-v4.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "6",
+                        "endColumns": "13",
+                        "endOffsets": "327"
+                    }
+                }
+            ]
+        }
+    ]
+}

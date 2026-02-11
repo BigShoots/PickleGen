@@ -1,0 +1,50 @@
+[
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/layout_activity_main.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/drawable_btn_pattern.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/drawable/btn_pattern.xml"
+    },
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/drawable_banner.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/drawable/banner.xml"
+    },
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/layout_activity_lg_control.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/layout/activity_lg_control.xml"
+    },
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/drawable_btn_lg.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/drawable/btn_lg.xml"
+    },
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/drawable_btn_pgen.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/drawable/btn_pgen.xml"
+    },
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/layout_activity_pattern.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/layout/activity_pattern.xml"
+    },
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/drawable_btn_resolve.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/drawable/btn_resolve.xml"
+    },
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/xml_network_security_config.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/xml/network_security_config.xml"
+    },
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/drawable_input_background.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/drawable/input_background.xml"
+    },
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.picklecal.lg.app-debug-31:/drawable_btn_background.xml.flat",
+        "source": "com.picklecal.lg.app-main-33:/drawable/btn_background.xml"
+    }
+]

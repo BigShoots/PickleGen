@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:padding="24dp"
+    android:scrollbarStyle="outsideOverlay">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="PickleCal"
+                android:textColor="@color/text_primary"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDeviceIp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:text="IP: --" />
+
+            <View
+                android:layout_width="16dp"
+                android:layout_height="1dp" />
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/status_ok"
+                android:textSize="14sp"
+                android:text="@string/status_idle" />
+        </LinearLayout>
+
+        <!-- Mode Selection -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_mode" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinnerMode"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/input_background"
+                android:popupBackground="@color/surface"
+                android:focusable="true" />
+        </LinearLayout>
+
+        <!-- Network Settings Row -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_settings" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_server_ip" />
+
+                <EditText
+                    android:id="@+id/etServerIp"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:hint="@string/hint_ip"
+                    android:inputType="text"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_server_port" />
+
+                <EditText
+                    android:id="@+id/etServerPort"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:hint="@string/hint_port"
+                    android:inputType="number"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_window_size" />
+
+                <EditText
+                    android:id="@+id/etWindowSize"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:hint="@string/hint_window"
+                    android:inputType="number"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Network Protocols -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_network" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnResolveSdr"
+                style="@style/ActionButton"
+                android:text="@string/btn_resolve_sdr"
+                android:background="@drawable/btn_resolve" />
+
+            <Button
+                android:id="@+id/btnResolveHdr"
+                style="@style/ActionButton"
+                android:text="@string/btn_resolve_hdr"
+                android:background="@drawable/btn_resolve" />
+
+            <Button
+                android:id="@+id/btnPgenSdr"
+                style="@style/ActionButton"
+                android:text="@string/btn_pgen_sdr"
+                android:background="@drawable/btn_pgen" />
+
+            <Button
+                android:id="@+id/btnPgenHdr"
+                style="@style/ActionButton"
+                android:text="@string/btn_pgen_hdr"
+                android:background="@drawable/btn_pgen" />
+        </LinearLayout>
+
+        <!-- Test Patterns -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_patterns" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnPluge"
+                style="@style/ActionButton"
+                android:text="@string/btn_pluge"
+                android:background="@drawable/btn_pattern" />
+
+            <Button
+                android:id="@+id/btnPlugeHdr"
+                style="@style/ActionButton"
+                android:text="@string/btn_pluge_hdr"
+                android:background="@drawable/btn_pattern" />
+
+            <Button
+                android:id="@+id/btnBarsFull"
+                style="@style/ActionButton"
+                android:text="@string/btn_bars_full"
+                android:background="@drawable/btn_pattern" />
+
+            <Button
+                android:id="@+id/btnBarsLimited"
+                style="@style/ActionButton"
+                android:text="@string/btn_bars_limited"
+                android:background="@drawable/btn_pattern" />
+        </LinearLayout>
+
+        <!-- Window Pattern with RGB -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="8dp"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_red" />
+
+                <EditText
+                    android:id="@+id/etRed"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:hint="128"
+                    android:inputType="number"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_green" />
+
+                <EditText
+                    android:id="@+id/etGreen"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:hint="128"
+                    android:inputType="number"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_blue" />
+
+                <EditText
+                    android:id="@+id/etBlue"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:hint="128"
+                    android:inputType="number"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnWindow"
+                style="@style/ActionButton"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:text="@string/btn_window"
+                android:background="@drawable/btn_pattern" />
+        </LinearLayout>
+
+        <!-- HDR Metadata -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_hdr_metadata" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_maxcll" />
+
+                <EditText
+                    android:id="@+id/etMaxCll"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:hint="1000"
+                    android:inputType="number"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_maxfall" />
+
+                <EditText
+                    android:id="@+id/etMaxFall"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:hint="400"
+                    android:inputType="number"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_maxdml" />
+
+                <EditText
+                    android:id="@+id/etMaxDml"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:hint="1000"
+                    android:inputType="number"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- LG TV Control Section -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_lg_tv_control" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_lg_ip" />
+
+                <EditText
+                    android:id="@+id/etLgTvIp"
+                    style="@style/InputField"
+                    android:layout_width="match_parent"
+                    android:hint="@string/hint_lg_ip"
+                    android:inputType="text"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnLgConnect"
+                style="@style/ActionButton"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:text="@string/btn_lg_connect"
+                android:background="@drawable/btn_lg" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvLgStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:paddingTop="4dp"
+            android:text="@string/lg_status_disconnected" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="8dp">
+
+            <Button
+                android:id="@+id/btnLgCalibration"
+                style="@style/ActionButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="@string/btn_lg_calibration"
+                android:background="@drawable/btn_lg"
+                android:enabled="false" />
+
+            <Button
+                android:id="@+id/btnLgDisableProcessing"
+                style="@style/ActionButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="@string/btn_lg_disable_processing"
+                android:background="@drawable/btn_lg"
+                android:enabled="false" />
+
+            <Button
+                android:id="@+id/btnLgDisconnect"
+                style="@style/ActionButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="@string/btn_lg_disconnect"
+                android:background="@drawable/btn_background"
+                android:enabled="false" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
