@@ -1,0 +1,47 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Android Studio
+*.iml
+.gradle
+/local.properties
+/.idea/
+.DS_Store
+captures/
+externalNativeBuild
+cmake-build-debug/
+*.hprof
+
+# Gradle Wrapper
+gradle-app.setting
+!gradle/wrapper/gradle-wrapper.jar
+
+# Keystore files
+*.jks
+*.keystore
+
+# Android NDK
+*.o
+*.a
+*.so
+*.jni
+
+# Build information
+build/
+intermediates/
+
+# Binaries for .NET
+picklecal-lg-windows/PickleCalLG/bin/
+picklecal-lg-windows/PickleCalLG/obj/
+picklecal-lg-windows/PickleCalLG/publish/
+picklecal-lg-windows/PickleCalLG/publish-selfcontained/
+
+# NuGet packages
+*.nupkg
+*.nuget.props
+*.nuget.targets
+project.lock.json

@@ -1,0 +1,194 @@
+<resources>
+    <string name="app_name">PickleGen</string>
+    <string name="lg_control_title">LG TV Calibration</string>
+    <string name="lg_calibration_title">LG TV Calibration</string>
+
+    <!-- Mode Selection -->
+    <string name="mode_select_subtitle">Choose how you want to use this device</string>
+    <string name="mode_easy_title">Easy Mode</string>
+    <string name="mode_easy_desc">Connect to PickleCal on your Windows PC for guided, wizard-driven TV calibration. No experience required — just follow the steps.</string>
+    <string name="mode_pro_title">Pro Mode</string>
+    <string name="mode_pro_desc">Use as a standalone pattern generator with HCFR, Calman, DisplayCAL, or other calibration software. Full manual control over patterns, HDR, and protocols.</string>
+    <string name="app_version">PickleGen v1.0</string>
+
+    <!-- Easy Mode -->
+    <string name="easy_mode_header">Easy Mode — PickleCal Remote</string>
+    <string name="easy_waiting">Waiting for PickleCal to connect…</string>
+    <string name="easy_ip_label">Enter this IP in PickleCal:</string>
+    <string name="easy_port_label">Port 5742 (automatic)</string>
+    <string name="easy_start_patterns">Start Patterns</string>
+    <string name="easy_go_back">← Back to Mode Select</string>
+
+    <!-- Main Activity -->
+    <string name="section_mode">Display Mode</string>
+    <string name="section_resolve">Resolve Protocol (Calman/DisplayCAL)</string>
+    <string name="section_pgen">PGenerator Protocol (HCFR/Calman)</string>
+    <string name="section_patterns">Manual Test Patterns</string>
+    <string name="section_window">Window Pattern</string>
+    <string name="section_hdr">HDR Metadata</string>
+    <string name="section_lg">LG TV Control</string>
+
+    <string name="hint_server_ip">Server IP</string>
+    <string name="hint_server_port">Port</string>
+    <string name="hint_window_size">Window %</string>
+    <string name="hint_red">R</string>
+    <string name="hint_green">G</string>
+    <string name="hint_blue">B</string>
+    <string name="hint_max_cll">Max CLL</string>
+    <string name="hint_max_fall">Max FALL</string>
+    <string name="hint_max_dml">Max DML</string>
+    <string name="hint_lg_ip">LG TV IP</string>
+
+    <string name="btn_resolve_sdr">Resolve SDR</string>
+    <string name="btn_resolve_hdr">Resolve HDR</string>
+    <string name="btn_pgen_sdr">PGen SDR</string>
+    <string name="btn_pgen_hdr">PGen HDR</string>
+    <string name="btn_pluge">PLUGE</string>
+    <string name="btn_pluge_hdr">PLUGE HDR</string>
+    <string name="btn_bars_full">Bars Full</string>
+    <string name="btn_bars_limited">Bars Limited</string>
+    <string name="btn_window">Show Window</string>
+    <string name="btn_lg_connect">Connect to LG TV</string>
+    <string name="btn_lg_calibrate">LG Calibration Panel</string>
+    <string name="btn_lg_calibration">LG Calibration Panel</string>
+    <string name="btn_lg_disable_processing">Disable Processing</string>
+    <string name="btn_lg_disconnect">Disconnect</string>
+
+    <!-- LG Control Activity -->
+    <string name="lg_section_connection">TV Connection</string>
+    <string name="lg_section_picture">Picture Settings</string>
+    <string name="lg_section_wb2pt">White Balance (2-Point)</string>
+    <string name="lg_section_wb20pt">White Balance (20-Point)</string>
+    <string name="lg_section_cms">Color Management</string>
+    <string name="lg_btn_connect">Connect</string>
+    <string name="lg_btn_disconnect">Disconnect</string>
+    <string name="lg_btn_read_settings">Read Settings</string>
+    <string name="lg_btn_apply_wb">Apply White Balance</string>
+    <string name="lg_btn_apply_cms">Apply CMS</string>
+    <string name="lg_btn_reset_wb">Reset WB</string>
+    <string name="lg_btn_reset_cms">Reset CMS</string>
+
+    <string name="lg_picture_mode">Picture Mode</string>
+    <string name="lg_backlight">Backlight</string>
+    <string name="lg_contrast">Contrast</string>
+    <string name="lg_brightness">Brightness</string>
+    <string name="lg_color">Color</string>
+    <string name="lg_tint">Tint</string>
+    <string name="lg_color_temp">Color Temp</string>
+    <string name="lg_gamma">Gamma</string>
+    <string name="lg_dynamic_contrast">Dynamic Contrast</string>
+    <string name="lg_tone_mapping">Dynamic TM</string>
+    <string name="lg_color_gamut">Color Gamut</string>
+
+    <string name="lg_wb_method">WB Method</string>
+    <string name="lg_wb_red_gain">Red Gain</string>
+    <string name="lg_wb_green_gain">Green Gain</string>
+    <string name="lg_wb_blue_gain">Blue Gain</string>
+    <string name="lg_wb_red_offset">Red Offset</string>
+    <string name="lg_wb_green_offset">Green Offset</string>
+    <string name="lg_wb_blue_offset">Blue Offset</string>
+
+    <string name="lg_cms_red">Red</string>
+    <string name="lg_cms_green">Green</string>
+    <string name="lg_cms_blue">Blue</string>
+    <string name="lg_cms_cyan">Cyan</string>
+    <string name="lg_cms_magenta">Magenta</string>
+    <string name="lg_cms_yellow">Yellow</string>
+    <string name="lg_cms_hue">Hue</string>
+    <string name="lg_cms_sat">Sat</string>
+    <string name="lg_cms_lum">Lum</string>
+
+    <!-- Labels -->
+    <string name="label_mode">Display Mode</string>
+    <string name="label_settings">Network Settings</string>
+    <string name="label_server_ip">Server IP</string>
+    <string name="label_server_port">Port</string>
+    <string name="label_window_size">Window %</string>
+    <string name="label_network">Network Protocols</string>
+    <string name="label_patterns">Test Patterns</string>
+    <string name="label_red">Red</string>
+    <string name="label_green">Green</string>
+    <string name="label_blue">Blue</string>
+    <string name="label_window">Window</string>
+    <string name="label_hdr_metadata">HDR Metadata</string>
+    <string name="label_maxcll">Max CLL</string>
+    <string name="label_maxfall">Max FALL</string>
+    <string name="label_maxdml">Max DML</string>
+    <string name="label_lg_tv_control">LG TV Control</string>
+    <string name="label_lg_ip">TV IP</string>
+    <string name="label_picture_mode">Picture Mode</string>
+    <string name="label_picture_settings">Picture Settings</string>
+    <string name="label_color_settings">Color Settings</string>
+    <string name="label_gamma">Gamma</string>
+    <string name="label_processing">Processing</string>
+    <string name="label_wb_2pt">White Balance (2-Point)</string>
+    <string name="label_wb_20pt">White Balance (20-Point)</string>
+    <string name="label_wb_20pt_desc">Adjust per-IRE correction points (5% steps, 0-100% IRE)</string>
+    <string name="label_wb_20pt_ire">IRE %</string>
+    <string name="label_wb_r_gain">Red Gain</string>
+    <string name="label_wb_g_gain">Green Gain</string>
+    <string name="label_wb_b_gain">Blue Gain</string>
+    <string name="label_wb_r_offset">Red Offset</string>
+    <string name="label_wb_g_offset">Green Offset</string>
+    <string name="label_wb_b_offset">Blue Offset</string>
+    <string name="label_cms">Color Management System</string>
+    <string name="label_cms_color">Color</string>
+    <string name="label_cms_hue">Hue</string>
+    <string name="label_cms_sat">Saturation</string>
+    <string name="label_cms_lum">Luminance</string>
+    <string name="label_quick_actions">Quick Actions</string>
+    <string name="label_log">Log</string>
+
+    <!-- Button Labels -->
+    <string name="btn_apply_picture">Apply Picture</string>
+    <string name="btn_apply_color">Apply Color</string>
+    <string name="btn_dyn_contrast_off">Disable Dyn Contrast</string>
+    <string name="btn_tone_map_off">Disable Tone Mapping</string>
+    <string name="btn_black_low">Black Level Low</string>
+    <string name="btn_black_high">Black Level High</string>
+    <string name="btn_apply_wb_point">Apply Point</string>
+    <string name="btn_apply_wb">Apply WB</string>
+    <string name="btn_apply_cms">Apply CMS</string>
+    <string name="btn_read_settings">Read Settings</string>
+    <string name="btn_back">Back</string>
+
+    <!-- Status Messages -->
+    <string name="status_idle">Idle</string>
+    <string name="status_connected">Connected</string>
+    <string name="status_disconnected">Disconnected</string>
+    <string name="status_connecting">Connecting...</string>
+
+    <!-- LG Status Messages -->
+    <string name="lg_status_connected">Connected</string>
+    <string name="lg_status_disconnected">Disconnected</string>
+    <string name="lg_status_connecting">Connecting...</string>
+
+    <!-- Additional labels for LG Control -->
+    <string name="label_backlight">Backlight</string>
+    <string name="label_contrast">Contrast</string>
+    <string name="label_brightness">Brightness</string>
+    <string name="label_color">Color</string>
+    <string name="label_sharpness">Sharpness</string>
+    <string name="label_tint">Tint</string>
+    <string name="label_color_temp">Color Temp</string>
+    <string name="label_dynamic_contrast">Dynamic Contrast</string>
+    <string name="label_tone_mapping">Dynamic TM</string>
+    <string name="label_color_gamut">Color Gamut</string>
+    <string name="label_wb_method">WB Method</string>
+    <string name="label_wb_red_gain">Red Gain</string>
+    <string name="label_wb_green_gain">Green Gain</string>
+    <string name="label_wb_blue_gain">Blue Gain</string>
+    <string name="label_wb_red_offset">Red Offset</string>
+    <string name="label_wb_green_offset">Green Offset</string>
+    <string name="label_wb_blue_offset">Blue Offset</string>
+
+    <!-- Reset Buttons -->
+    <string name="btn_reset_wb">Reset WB</string>
+    <string name="btn_reset_cms">Reset CMS</string>
+
+    <!-- Hint Text -->
+    <string name="hint_ip">TV IP Address</string>
+    <string name="hint_port">Port</string>
+    <string name="hint_window">Window Size %</string>
+    <string name="hint_window_20pt">20-Point IRE</string>
+</resources>

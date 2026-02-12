@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:padding="24dp"
+    android:scrollbarStyle="outsideOverlay">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/lg_calibration_title"
+                android:textColor="@color/text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLgCalStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/status_ok"
+                android:textSize="14sp"
+                android:text="Connected" />
+        </LinearLayout>
+
+        <!-- Picture Mode -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_picture_mode" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <Spinner
+                android:id="@+id/spinnerPictureMode"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="2"
+                android:background="@drawable/input_background"
+                android:popupBackground="@color/surface"
+                android:focusable="true" />
+
+            <Button
+                android:id="@+id/btnApplyPictureMode"
+                style="@style/ActionButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="Apply"
+                android:background="@drawable/btn_lg" />
+        </LinearLayout>
+
+        <!-- Basic Picture Settings -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_picture_settings" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_backlight" />
+                <EditText
+                    android:id="@+id/etBacklight"
+                    style="@style/CalibrationInput"
+                    android:hint="100" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_contrast" />
+                <EditText
+                    android:id="@+id/etContrast"
+                    style="@style/CalibrationInput"
+                    android:hint="85" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_brightness" />
+                <EditText
+                    android:id="@+id/etBrightness"
+                    style="@style/CalibrationInput"
+                    android:hint="50" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_color" />
+                <EditText
+                    android:id="@+id/etColor"
+                    style="@style/CalibrationInput"
+                    android:hint="50" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_sharpness" />
+                <EditText
+                    android:id="@+id/etSharpness"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnApplyPictureSettings"
+            style="@style/ActionButton"
+            android:layout_width="match_parent"
+            android:layout_marginTop="4dp"
+            android:text="@string/btn_apply_picture"
+            android:background="@drawable/btn_lg" />
+
+        <!-- Color / Gamut / Gamma -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_color_settings" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_color_gamut" />
+                <Spinner
+                    android:id="@+id/spinnerColorGamut"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/input_background"
+                    android:popupBackground="@color/surface" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_gamma" />
+                <Spinner
+                    android:id="@+id/spinnerGamma"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/input_background"
+                    android:popupBackground="@color/surface" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_color_temp" />
+                <Spinner
+                    android:id="@+id/spinnerColorTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/input_background"
+                    android:popupBackground="@color/surface" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnApplyColorSettings"
+            style="@style/ActionButton"
+            android:layout_width="match_parent"
+            android:layout_marginTop="4dp"
+            android:text="@string/btn_apply_color"
+            android:background="@drawable/btn_lg" />
+
+        <!-- Processing Overrides -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_processing" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnDisableDynContrast"
+                style="@style/ActionButton"
+                android:text="@string/btn_dyn_contrast_off"
+                android:background="@drawable/btn_lg" />
+
+            <Button
+                android:id="@+id/btnDisableToneMapping"
+                style="@style/ActionButton"
+                android:text="@string/btn_tone_map_off"
+                android:background="@drawable/btn_lg" />
+
+            <Button
+                android:id="@+id/btnSetBlackLevelLow"
+                style="@style/ActionButton"
+                android:text="@string/btn_black_low"
+                android:background="@drawable/btn_lg" />
+
+            <Button
+                android:id="@+id/btnSetBlackLevelHigh"
+                style="@style/ActionButton"
+                android:text="@string/btn_black_high"
+                android:background="@drawable/btn_lg" />
+        </LinearLayout>
+
+        <!-- White Balance 2-Point -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_wb_2pt" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_wb_r_gain" />
+                <EditText
+                    android:id="@+id/etWbRedGain"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_wb_g_gain" />
+                <EditText
+                    android:id="@+id/etWbGreenGain"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_wb_b_gain" />
+                <EditText
+                    android:id="@+id/etWbBlueGain"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_wb_r_offset" />
+                <EditText
+                    android:id="@+id/etWbRedOffset"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_wb_g_offset" />
+                <EditText
+                    android:id="@+id/etWbGreenOffset"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_wb_b_offset" />
+                <EditText
+                    android:id="@+id/etWbBlueOffset"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnApplyWb2pt"
+            style="@style/ActionButton"
+            android:layout_width="match_parent"
+            android:layout_marginTop="4dp"
+            android:text="@string/btn_apply_wb"
+            android:background="@drawable/btn_lg" />
+
+        <!-- White Balance 20-Point -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_wb_20pt" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:text="@string/label_wb_20pt_desc"
+            android:paddingBottom="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_wb_20pt_ire" />
+                <Spinner
+                    android:id="@+id/spinnerWb20ptIre"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/input_background"
+                    android:popupBackground="@color/surface" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="R" />
+                <EditText
+                    android:id="@+id/etWb20ptRed"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="G" />
+                <EditText
+                    android:id="@+id/etWb20ptGreen"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="B" />
+                <EditText
+                    android:id="@+id/etWb20ptBlue"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnApplyWb20pt"
+            style="@style/ActionButton"
+            android:layout_width="match_parent"
+            android:layout_marginTop="4dp"
+            android:text="@string/btn_apply_wb_point"
+            android:background="@drawable/btn_lg" />
+
+        <!-- CMS (Color Management System) -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_cms" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_cms_color" />
+                <Spinner
+                    android:id="@+id/spinnerCmsColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/input_background"
+                    android:popupBackground="@color/surface" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_cms_hue" />
+                <EditText
+                    android:id="@+id/etCmsHue"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_cms_sat" />
+                <EditText
+                    android:id="@+id/etCmsSaturation"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/CalibrationLabel"
+                    android:text="@string/label_cms_lum" />
+                <EditText
+                    android:id="@+id/etCmsLuminance"
+                    style="@style/CalibrationInput"
+                    android:hint="0" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnApplyCms"
+            style="@style/ActionButton"
+            android:layout_width="match_parent"
+            android:layout_marginTop="4dp"
+            android:text="@string/btn_apply_cms"
+            android:background="@drawable/btn_lg" />
+
+        <!-- Quick Actions -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_quick_actions" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnReadSettings"
+                style="@style/ActionButton"
+                android:text="@string/btn_read_settings"
+                android:background="@drawable/btn_background" />
+
+            <Button
+                android:id="@+id/btnResetWb"
+                style="@style/ActionButton"
+                android:text="@string/btn_reset_wb"
+                android:background="@drawable/btn_background" />
+
+            <Button
+                android:id="@+id/btnResetCms"
+                style="@style/ActionButton"
+                android:text="@string/btn_reset_cms"
+                android:background="@drawable/btn_background" />
+
+            <Button
+                android:id="@+id/btnBack"
+                style="@style/ActionButton"
+                android:text="@string/btn_back"
+                android:background="@drawable/btn_background" />
+        </LinearLayout>
+
+        <!-- Log Output -->
+        <TextView
+            style="@style/SectionTitle"
+            android:text="@string/label_log" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/input_background"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/tvLog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp"
+                android:fontFamily="monospace"
+                android:text="" />
+        </ScrollView>
+
+    </LinearLayout>
+</ScrollView>
